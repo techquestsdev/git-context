@@ -8,20 +8,20 @@ A powerful command-line tool for managing multiple Git configuration profiles. S
 ![License](https://img.shields.io/github/license/techquestsdev/git-context)
 ![Latest Release](https://img.shields.io/github/v/release/techquestsdev/git-context?include_prereleases)
 
-## ✨ Features
+## Features
 
-- 🎯 **Multiple Profiles** - Create and manage unlimited Git configuration profiles
-- ⚡ **Instant Switching** - Switch between profiles with a single command
-- 🌍 **Global Settings** - Define shared configuration across all profiles
-- 🔗 **URL Rewrites** - Configure Git URL rewrites per profile (SSH <-> HTTPS)
-- 🛡️ **Safe Operations** - Automatic backups before switching profiles
-- 💬 **Interactive Setup** - Guided profile creation with prompts
-- 🎨 **Colored Output** - Beautiful, easy-to-read CLI output
-- 📝 **YAML Configuration** - Simple, human-readable configuration format
+- **Multiple Profiles** - Create and manage unlimited Git configuration profiles
+- **Instant Switching** - Switch between profiles with a single command
+- **Global Settings** - Define shared configuration across all profiles
+- **URL Rewrites** - Configure Git URL rewrites per profile (SSH <-> HTTPS)
+- **Safe Operations** - Automatic backups before switching profiles
+- **Interactive Setup** - Guided profile creation with prompts
+- **Colored Output** - Beautiful, easy-to-read CLI output
+- **YAML Configuration** - Simple, human-readable configuration format
 
-## 🚀 Installation
+## Installation
 
-### 📦 Quick Install (Recommended)
+### Quick Install (Recommended)
 
 #### Using Go Install
 
@@ -52,7 +52,7 @@ curl -L https://github.com/techquestsdev/git-context/releases/latest/download/gi
 sudo mv git-context /usr/local/bin/
 ```
 
-### 🛠️ Build from Source
+### Build from Source
 
 #### Prerequisites
 
@@ -82,7 +82,7 @@ go install
 git-context --version
 ```
 
-## 📖 Usage
+## Usage
 
 ### Quick Start Guide
 
@@ -124,7 +124,7 @@ Profile      Email                         Status
 -------      -----                         ------
 work         andre@work.com                ● (active)
 personal     andre@personal.com
-school       andre@school.edu
+university   andre@university.edu
 ```
 
 #### 4. Switch Between Profiles
@@ -158,24 +158,24 @@ git-context show work
 #### 7. Remove a Profile
 
 ```bash
-git-context remove school
+git-context remove university
 ```
 
 ### All Available Commands
 
-| Command                      | Description                         |
-| ---------------------------- | ----------------------------------- |
-| `git-context init`            | Initialize configuration            |
-| `git-context add <name>`      | Create a new profile                |
-| `git-context switch <name>`   | Switch to a profile                 |
-| `git-context list`            | List all profiles                   |
-| `git-context current`         | Show active profile                 |
-| `git-context show <name>`     | Show profile details                |
-| `git-context remove <name>`   | Delete a profile                    |
-| `git-context --help`          | Show help                           |
-| `git-context --version`       | Show version                        |
+| Command                     | Description              |
+| --------------------------- | ------------------------ |
+| `git-context init`          | Initialize configuration |
+| `git-context add <name>`    | Create a new profile     |
+| `git-context switch <name>` | Switch to a profile      |
+| `git-context list`          | List all profiles        |
+| `git-context current`       | Show active profile      |
+| `git-context show <name>`   | Show profile details     |
+| `git-context remove <name>` | Delete a profile         |
+| `git-context --help`        | Show help                |
+| `git-context --version`     | Show version             |
 
-## ⚙️ Configuration
+## Configuration
 
 The configuration is stored in YAML format at `~/.config/git-context/config.yaml`.
 
@@ -192,7 +192,7 @@ profiles:
     user:
       name: "Your Name"
       email: "your.email@example.com"
-      signingkey: "GPG_KEY_ID"  # optional
+      signingkey: "GPG_KEY_ID" # optional
     url:
       - pattern: "ssh://git@gitlab.com/"
         insteadOf: "https://gitlab.com/"
@@ -205,7 +205,7 @@ profiles:
 global:
   core:
     pager: delta
-    editor: vim
+    editor: nvim
   push:
     autoSetupRemote: true
   merge:
@@ -221,11 +221,11 @@ profiles:
   work:
     user:
       name: "Andre Nogueira"
-      email: "andre.nogueira@mollie.com"
+      email: "aanogueira@techquests.dev"
       signingkey: "A0A90F4231D8B028"
     url:
-      - pattern: "git@gitlab.molops.io/"
-        insteadOf: "https://gitlab.molops.io/"
+      - pattern: "git@git.techquests.dev/"
+        insteadOf: "https://git.techquests.dev/"
       - pattern: "ssh://git@github.com/"
         insteadOf: "https://github.com/"
     http:
@@ -234,15 +234,17 @@ profiles:
   personal:
     user:
       name: "Andre Nogueira"
-      email: "andre@personal.com"
+      email: "aanogueira@protonmail.com"
+      signingkey: "B1C2D3E4F5G6H7I8"
     url:
       - pattern: "ssh://git@github.com/"
         insteadOf: "https://github.com/"
 
-  school:
+  university:
     user:
-      name: "Andre N."
-      email: "andre@school.edu"
+      name: "Andre Nogueira"
+      email: "aanogueira@university.edu"
+      signingkey: "C1D2E3F4G5H6I7J8"
 ```
 
 ### Global vs Profile-Specific Settings
@@ -253,22 +255,34 @@ profiles:
 
 ### Common Configuration Sections
 
-| Section        | Purpose                                | Examples                              |
-| -------------- | -------------------------------------- | ------------------------------------- |
-| `user`         | User identity                          | name, email, signingkey               |
-| `core`         | Core Git settings                      | editor, pager, autocrlf               |
-| `push`         | Push behavior                          | default, autoSetupRemote              |
-| `pull`         | Pull behavior                          | rebase, ff                            |
-| `merge`        | Merge strategies                       | conflictStyle, tool                   |
-| `commit`       | Commit settings                        | gpgsign, template                     |
-| `gpg`          | GPG configuration                      | program, format                       |
-| `url`          | URL rewrites                           | pattern, insteadOf                    |
-| `http`         | HTTP settings                          | postBuffer, sslVerify                 |
-| `delta`        | Delta pager configuration              | navigate, line-numbers                |
+| Section       | Purpose                       | Parameters             |
+| ------------- | ----------------------------- | ---------------------- |
+| `add`         | Add settings                  | \<key\>: \<value\>     |
+| `alias`       | Create shortcuts for commands | \<alias\>: \<command\> |
+| `branch`      | Branch management             | \<key\>: \<value\>     |
+| `column`      | Column layout settings        | \<key\>: \<value\>     |
+| `commit`      | Commit message templates      | \<key\>: \<value\>     |
+| `core`        | Core Git settings             | \<key\>: \<value\>     |
+| `custom`      | Custom settings               | \<key\>: \<value\>     |
+| `delta`       | Delta pager settings          | \<key\>: \<value\>     |
+| `diff`        | Diff settings                 | \<key\>: \<value\>     |
+| `feature`     | Feature settings              | \<key\>: \<value\>     |
+| `fetch`       | Fetch settings                | \<key\>: \<value\>     |
+| `gpg`         | GPG settings                  | \<key\>: \<value\>     |
+| `http`        | HTTP settings                 | \<key\>: \<value\>     |
+| `init`        | Initialization settings       | \<key\>: \<value\>     |
+| `interactive` | Interactive settings          | \<key\>: \<value\>     |
+| `maintenance` | Maintenance settings          | \<key\>: \<value\>     |
+| `merge`       | Merge settings                | \<key\>: \<value\>     |
+| `pull`        | Pull settings                 | \<key\>: \<value\>     |
+| `push`        | Push settings                 | \<key\>: \<value\>     |
+| `rebase`      | Rebase settings               | \<key\>: \<value\>     |
+| `rerere`      | Rerere settings               | \<key\>: \<value\>     |
+| `tag`         | Tag settings                  | \<key\>: \<value\>     |
+| `url`         | URL settings                  | \<key\>: \<value\>     |
+| `user`        | User settings                 | \<key\>: \<value\>     |
 
-> Based on my personal configuration needs.
-
-## 🎯 Use Cases
+## Use Cases
 
 ### Scenario 1: Work vs Personal Repositories
 
@@ -318,23 +332,23 @@ Configure SSH access for different Git hosts:
 profiles:
   work:
     url:
-      - pattern: "ssh://git@gitlab.company.com/"
-        insteadOf: "https://gitlab.company.com/"
+      - pattern: "ssh://git@git.company.com/"
+        insteadOf: "https://git.company.com/"
   personal:
     url:
       - pattern: "ssh://git@github.com/"
         insteadOf: "https://github.com/"
 ```
 
-## 🛡️ Safety Features
+## Safety Features
 
-- ✅ **Automatic Backups** - Before switching profiles, current Git config is backed up to `~/.gitconfig.bak`
-- ✅ **Confirmation Prompts** - Destructive operations require user confirmation
-- ✅ **Validation** - Profiles are validated before being applied
-- ✅ **Error Handling** - Clear error messages guide you when something goes wrong
-- ✅ **Non-Destructive Init** - `init` command preserves existing profiles
+- **Automatic Backups** - Before switching profiles, current Git config is backed up to `~/.gitconfig.bak`
+- **Confirmation Prompts** - Destructive operations require user confirmation
+- **Validation** - Profiles are validated before being applied
+- **Error Handling** - Clear error messages guide you when something goes wrong
+- **Non-Destructive Init** - `init` command preserves existing profiles
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Config File Not Found
 
@@ -377,7 +391,7 @@ cp ~/.gitconfig.bak ~/.gitconfig
 
 **Solution:** This is expected! The `init` command now preserves existing profiles instead of clearing them.
 
-## 🧪 Testing
+## Testing
 
 The project has comprehensive test coverage and zero linting issues, leveraging Go's testing framework and `golangci-lint` for code quality.
 
@@ -428,13 +442,13 @@ make all
 
 ### Test Categories
 
-- ✅ **Configuration Management** - Profile CRUD, merging, persistence
-- ✅ **Git Operations** - Config file parsing, URL rewrites, backups
-- ✅ **UI Components** - Colored output, tables, formatting
-- ✅ **Command Integration** - Profile operations, error handling
-- ✅ **Edge Cases** - Invalid YAML, missing files, error paths
+- **Configuration Management** - Profile CRUD, merging, persistence
+- **Git Operations** - Config file parsing, URL rewrites, backups
+- **UI Components** - Colored output, tables, formatting
+- **Command Integration** - Profile operations, error handling
+- **Edge Cases** - Invalid YAML, missing files, error paths
 
-## 🏗️ Architecture
+## Architecture
 
 ### Project Structure
 
@@ -475,14 +489,14 @@ git-context/
 - **User Experience** - Colored output, clear messages, confirmation prompts
 - **Safety First** - Automatic backups, validation, error handling
 
-## 📦 Dependencies
+## Dependencies
 
 - [github.com/spf13/cobra](https://github.com/spf13/cobra) - CLI framework
 - [github.com/manifoldco/promptui](https://github.com/manifoldco/promptui) - Interactive prompts
 - [github.com/fatih/color](https://github.com/fatih/color) - Colored terminal output
 - [gopkg.in/yaml.v3](https://gopkg.in/yaml.v3) - YAML parsing and serialization
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -494,11 +508,11 @@ Contributions are welcome! Please follow these steps:
 
 ### Before Submitting
 
-- ✅ Ensure all tests pass (`go test -v ./...`)
-- ✅ Maintain or improve code coverage
-- ✅ Follow existing code style
-- ✅ Add tests for new features
-- ✅ Update documentation as needed
+- Ensure all tests pass (`go test -v ./...`)
+- Maintain or improve code coverage
+- Follow existing code style
+- Add tests for new features
+- Update documentation as needed
 
 ### Development Commands
 
@@ -545,17 +559,17 @@ make version              # Show Go version
 make all                  # Run fmt, lint, test, and build
 ```
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Cobra](https://github.com/spf13/cobra) for the excellent CLI framework
 - [Bubble Tea](https://github.com/charmbracelet/bubbletea) ecosystem for inspiration
 - [PromptUI](https://github.com/manifoldco/promptui) for interactive prompts
 
-## 📧 Contact
+## Contact
 
 André Nogueira - [@aanogueira](https://github.com/aanogueira)
 
