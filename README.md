@@ -3,8 +3,10 @@
 A powerful command-line tool for managing multiple Git configuration profiles. Seamlessly switch between different Git identities (work, personal, school, etc.) with a single command.
 
 ![Go Version](https://img.shields.io/github/go-mod/go-version/techquestsdev/git-context?logo=go&logoColor=white)
+![Build Status](https://github.com/techquestsdev/git-context/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/techquestsdev/git-context/branch/main/graph/badge.svg)](https://codecov.io/gh/techquestsdev/git-context)
 ![License](https://img.shields.io/github/license/techquestsdev/git-context)
+![Latest Release](https://img.shields.io/github/v/release/techquestsdev/git-context?include_prereleases)
 
 ## ✨ Features
 
