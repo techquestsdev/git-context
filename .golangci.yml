@@ -1,0 +1,70 @@
+version: "2"
+
+run:
+  issues-exit-code: 1
+  tests: true
+
+output:
+  formats:
+    text:
+      path: stdout
+      colors: true
+
+linters:
+  default: all
+  disable:
+    - wsl # Deprecated, using wsl_v5 instead
+    - exhaustruct # Disabled due to excessive noise
+    - noinlineerr # Disabled to allow error wrapping without inlining
+    - testpackage # Tests need access to unexported functions
+    - gochecknoglobals # Cobra commands need to be global
+    - gochecknoinits # Cobra commands register via init()
+    - funlen # Some test functions are necessarily long
+    - forbidigo # We need fmt.Print* for table output
+    - cyclop # Complexity is acceptable for our use case
+    - gosec # File permissions and paths are intentional
+    - noctx # Command execution doesn't need context for this CLI
+    - varnamelen # Short variable names are fine in small scopes
+    - goconst # Test strings don't need to be constants
+    - mnd # Magic numbers are acceptable in parsing logic
+  settings:
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+    gocritic:
+      disabled-checks:
+        - unlambda
+    misspell:
+      locale: US
+      ignore-rules:
+        - noteable
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+    depguard:
+      rules:
+        Main:
+          allow:
+            - $gostd
+            - github.com/aanogueira/git-context/
+            - github.com/manifoldco/promptui
+            - github.com/cockroachdb/errors
+            - github.com/fatih/color
+            - github.com/spf13/cobra
+            - gopkg.in/yaml.v3
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com)
+      custom-order: true
+  exclusions:
+    generated: lax

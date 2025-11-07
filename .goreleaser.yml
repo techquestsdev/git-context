@@ -1,0 +1,119 @@
+# GoReleaser configuration for Git Context
+# A powerful CLI tool for managing multiple Git configuration profiles
+# Keywords: git, configuration, profiles, CLI, developer-tools, Go
+# Documentation: https://goreleaser.com
+
+project_name: git-context
+
+version: 2
+
+# Metadata for the project
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod verify
+
+builds:
+  - id: git-context
+    binary: git-context
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: default
+    format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "^ci:"
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: "Bug fixes"
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: "Performance improvements"
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
+
+brews:
+  - repository:
+      owner: techquestsdev
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TOKEN }}"
+    name: git-context
+    homepage: https://github.com/techquestsdev/git-context
+    description: "A powerful CLI tool for managing multiple Git configuration profiles"
+    license: MIT
+    skip_upload: auto
+    # Keywords for Homebrew discoverability
+    caveats: |
+      Git Context is a command-line tool for managing multiple Git configuration profiles.
+      Switch between different Git identities (work, personal, school, etc.) with a single command.
+      Keywords: git, configuration, profiles, CLI, developer-tools, identity-management
+
+release:
+  github:
+    owner: techquestsdev
+    name: git-context
+  draft: false
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Git Context {{ .Tag }} ({{ .Date }})
+
+    A powerful CLI tool for managing multiple Git configuration profiles.
+    Switch seamlessly between different Git identities with automatic backups and validation.
+  footer: |
+    **Full Changelog**: https://github.com/techquestsdev/git-context/compare/{{ .PreviousTag }}...{{ .Tag }}
