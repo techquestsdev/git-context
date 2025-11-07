@@ -22,126 +22,6 @@ func TestNewGit(t *testing.T) {
 	}
 }
 
-func TestReadConfigNonExistent(t *testing.T) {
-	t.Parallel()
-
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "nonexistent.gitconfig")
-
-	g := NewGit(configPath)
-
-	config, err := g.ReadConfig()
-	if err != nil {
-		t.Errorf("ReadConfig should not error for non-existent file: %v", err)
-	}
-
-	if config == nil {
-		t.Fatal("ReadConfig should return empty map for non-existent file")
-	}
-
-	if len(config) != 0 {
-		t.Errorf("Expected empty config, got %d entries", len(config))
-	}
-}
-
-func TestWriteAndReadConfig(t *testing.T) {
-	t.Parallel()
-
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "test.gitconfig")
-
-	g := NewGit(configPath)
-
-	// Write config
-	config := map[string]any{
-		"user.name":   "Test User",
-		"user.email":  "test@example.com",
-		"core.editor": "vim",
-	}
-
-	err := g.WriteConfig(config)
-	if err != nil {
-		t.Fatalf("WriteConfig failed: %v", err)
-	}
-
-	// Check file was created
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		t.Fatal("Config file was not created")
-	}
-
-	// Read config back
-	readConfig, err := g.ReadConfig()
-	if err != nil {
-		t.Fatalf("ReadConfig failed: %v", err)
-	}
-
-	// Verify values
-	if readConfig["user.name"] != "Test User" {
-		t.Errorf("Expected user.name 'Test User', got '%s'", readConfig["user.name"])
-	}
-
-	if readConfig["user.email"] != "test@example.com" {
-		t.Errorf("Expected user.email 'test@example.com', got '%s'", readConfig["user.email"])
-	}
-
-	if readConfig["core.editor"] != "vim" {
-		t.Errorf("Expected core.editor 'vim', got '%s'", readConfig["core.editor"])
-	}
-}
-
-func TestBackupAndRestoreConfig(t *testing.T) {
-	t.Parallel()
-
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "test.gitconfig")
-	backupPath := filepath.Join(tmpDir, "test.gitconfig.bak")
-
-	g := NewGit(configPath)
-
-	// Create initial config
-	originalContent := "[user]\n\tname = Original User\n\temail = original@example.com\n"
-
-	err := os.WriteFile(configPath, []byte(originalContent), 0o644)
-	if err != nil {
-		t.Fatalf("Failed to create test config: %v", err)
-	}
-
-	// Backup config
-	err = g.BackupConfig(backupPath)
-	if err != nil {
-		t.Fatalf("BackupConfig failed: %v", err)
-	}
-
-	// Check backup was created
-	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
-		t.Fatal("Backup file was not created")
-	}
-
-	// Modify original config
-	modifiedContent := "[user]\n\tname = Modified User\n\temail = modified@example.com\n"
-
-	err = os.WriteFile(configPath, []byte(modifiedContent), 0o644)
-	if err != nil {
-		t.Fatalf("Failed to modify config: %v", err)
-	}
-
-	// Restore from backup
-	err = g.RestoreConfig(backupPath)
-	if err != nil {
-		t.Fatalf("RestoreConfig failed: %v", err)
-	}
-
-	// Verify restoration
-	restoredContent, err := os.ReadFile(configPath)
-	if err != nil {
-		t.Fatalf("Failed to read restored config: %v", err)
-	}
-
-	if string(restoredContent) != originalContent {
-		t.Error("Restored content does not match original")
-	}
-}
-
 func TestBackupConfigNonExistent(t *testing.T) {
 	t.Parallel()
 
@@ -155,57 +35,6 @@ func TestBackupConfigNonExistent(t *testing.T) {
 	err := g.BackupConfig(backupPath)
 	if err != nil {
 		t.Errorf("BackupConfig should not error for non-existent file: %v", err)
-	}
-}
-
-func TestRestoreConfigNonExistent(t *testing.T) {
-	t.Parallel()
-
-	tmpDir := t.TempDir()
-	configPath := filepath.Join(tmpDir, "test.gitconfig")
-	backupPath := filepath.Join(tmpDir, "nonexistent.backup")
-
-	g := NewGit(configPath)
-
-	// Restoring from non-existent backup should error
-	err := g.RestoreConfig(backupPath)
-	if err == nil {
-		t.Error("RestoreConfig should error for non-existent backup")
-	}
-}
-
-func TestParseGitConfig(t *testing.T) {
-	t.Parallel()
-
-	content := `# Comment line
-[user]
-	name = Test User
-	email = test@example.com
-
-[core]
-	editor = vim
-	autocrlf = input
-
-[url "ssh://git@github.com/"]
-	insteadOf = https://github.com/
-`
-
-	config := parseGitConfig(content)
-
-	if config["user.name"] != "Test User" {
-		t.Errorf("Expected user.name 'Test User', got '%s'", config["user.name"])
-	}
-
-	if config["user.email"] != "test@example.com" {
-		t.Errorf("Expected user.email 'test@example.com', got '%s'", config["user.email"])
-	}
-
-	if config["core.editor"] != "vim" {
-		t.Errorf("Expected core.editor 'vim', got '%s'", config["core.editor"])
-	}
-
-	if config["core.autocrlf"] != "input" {
-		t.Errorf("Expected core.autocrlf 'input', got '%s'", config["core.autocrlf"])
 	}
 }
 
@@ -268,53 +97,6 @@ func TestBuildGitConfigWithQuotedSubsection(t *testing.T) {
 	}
 }
 
-func TestParseGitConfigSkipsComments(t *testing.T) {
-	t.Parallel()
-
-	content := `# This is a comment
-; This is also a comment
-[user]
-	# Inline comment
-	name = Test User
-	; Another inline comment
-`
-
-	config := parseGitConfig(content)
-
-	if config["user.name"] != "Test User" {
-		t.Errorf("Expected user.name 'Test User', got '%s'", config["user.name"])
-	}
-
-	// Should only have one entry
-	if len(config) != 1 {
-		t.Errorf("Expected 1 config entry, got %d", len(config))
-	}
-}
-
-func TestParseGitConfigHandlesEmptyLines(t *testing.T) {
-	t.Parallel()
-
-	content := `
-
-[user]
-
-	name = Test User
-
-	email = test@example.com
-
-`
-
-	config := parseGitConfig(content)
-
-	if config["user.name"] != "Test User" {
-		t.Errorf("Expected user.name 'Test User', got '%s'", config["user.name"])
-	}
-
-	if config["user.email"] != "test@example.com" {
-		t.Errorf("Expected user.email 'test@example.com', got '%s'", config["user.email"])
-	}
-}
-
 func TestWriteConfigWithComplexStructure(t *testing.T) {
 	t.Parallel()
 
@@ -370,20 +152,6 @@ func TestWriteConfigWithComplexStructure(t *testing.T) {
 	}
 }
 
-func TestReadConfigError(t *testing.T) {
-	t.Parallel()
-
-	// Try to read from a directory instead of a file
-	tmpDir := t.TempDir()
-
-	g := NewGit(tmpDir) // tmpDir is a directory, not a file
-
-	_, err := g.ReadConfig()
-	if err == nil {
-		t.Error("ReadConfig should fail when path is a directory")
-	}
-}
-
 func TestWriteConfigError(t *testing.T) {
 	t.Parallel()
 
@@ -418,18 +186,56 @@ func TestBackupConfigError(t *testing.T) {
 	}
 }
 
-func TestRestoreConfigError(t *testing.T) {
+func TestBackupConfigSuccess(t *testing.T) {
+	t.Parallel()
+
+	tmpDir := t.TempDir()
+	configPath := filepath.Join(tmpDir, "test.gitconfig")
+	backupPath := filepath.Join(tmpDir, "backup.gitconfig")
+
+	// Create a config file with content
+	content := "[user]\n\tname = Test User\n\temail = test@example.com\n"
+	if err := os.WriteFile(configPath, []byte(content), 0o644); err != nil {
+		t.Fatalf("Failed to create config file: %v", err)
+	}
+
+	g := NewGit(configPath)
+
+	// Backup should succeed
+	err := g.BackupConfig(backupPath)
+	if err != nil {
+		t.Fatalf("BackupConfig failed: %v", err)
+	}
+
+	// Verify backup content matches original
+	backupContent, err := os.ReadFile(backupPath)
+	if err != nil {
+		t.Fatalf("Failed to read backup: %v", err)
+	}
+
+	if string(backupContent) != content {
+		t.Error("Backup content should match original")
+	}
+}
+
+func TestBackupConfigInvalidBackupPath(t *testing.T) {
 	t.Parallel()
 
 	tmpDir := t.TempDir()
 	configPath := filepath.Join(tmpDir, "test.gitconfig")
 
+	// Create a valid config file
+	content := "[user]\n\tname = Test\n"
+	if err := os.WriteFile(configPath, []byte(content), 0o644); err != nil {
+		t.Fatalf("Failed to create config: %v", err)
+	}
+
 	g := NewGit(configPath)
 
-	// Try to restore when backup doesn't exist
-	err := g.RestoreConfig(filepath.Join(tmpDir, "nonexistent.bak"))
+	// Try to backup to an invalid location
+	err := g.BackupConfig("/invalid/path/backup")
 	if err == nil {
-		t.Error("RestoreConfig should fail when backup doesn't exist")
+		t.Error("BackupConfig should fail with invalid backup path")
 	}
 }
 

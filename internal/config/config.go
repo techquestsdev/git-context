@@ -14,23 +14,30 @@ import (
 
 // Profile represents a git configuration profile.
 type Profile struct {
-	User        UserConfig     `yaml:"user,omitempty"`
-	URL         []URLConfig    `yaml:"url,omitempty"`
-	HTTP        map[string]any `yaml:"http,omitempty"`
-	Core        map[string]any `yaml:"core,omitempty"`
-	Interactive map[string]any `yaml:"interactive,omitempty"`
 	Add         map[string]any `yaml:"add,omitempty"`
-	Delta       map[string]any `yaml:"delta,omitempty"`
-	Push        map[string]any `yaml:"push,omitempty"`
-	Merge       map[string]any `yaml:"merge,omitempty"`
-	Commit      map[string]any `yaml:"commit,omitempty"`
-	GPG         map[string]any `yaml:"gpg,omitempty"`
-	Pull        map[string]any `yaml:"pull,omitempty"`
-	Rerere      map[string]any `yaml:"rerere,omitempty"`
-	Column      map[string]any `yaml:"column,omitempty"`
+	Alias       map[string]any `yaml:"alias,omitempty"`
 	Branch      map[string]any `yaml:"branch,omitempty"`
-	Init        map[string]any `yaml:"init,omitempty"`
+	Column      map[string]any `yaml:"column,omitempty"`
+	Commit      map[string]any `yaml:"commit,omitempty"`
+	Core        map[string]any `yaml:"core,omitempty"`
 	Custom      map[string]any `yaml:"custom,omitempty"`
+	Delta       map[string]any `yaml:"delta,omitempty"`
+	Diff        map[string]any `yaml:"diff,omitempty"`
+	Feature     map[string]any `yaml:"feature,omitempty"`
+	Fetch       map[string]any `yaml:"fetch,omitempty"`
+	GPG         map[string]any `yaml:"gpg,omitempty"`
+	HTTP        map[string]any `yaml:"http,omitempty"`
+	Init        map[string]any `yaml:"init,omitempty"`
+	Interactive map[string]any `yaml:"interactive,omitempty"`
+	Maintenance map[string]any `yaml:"maintenance,omitempty"`
+	Merge       map[string]any `yaml:"merge,omitempty"`
+	Pull        map[string]any `yaml:"pull,omitempty"`
+	Push        map[string]any `yaml:"push,omitempty"`
+	Rebase      map[string]any `yaml:"rebase,omitempty"`
+	Rerere      map[string]any `yaml:"rerere,omitempty"`
+	Tag         map[string]any `yaml:"tag,omitempty"`
+	URL         []URLConfig    `yaml:"url,omitempty"`
+	User        UserConfig     `yaml:"user,omitempty"`
 }
 
 // UserConfig represents git user section.
@@ -180,24 +187,20 @@ func (c *Config) Merge(profileName string) (*Profile, error) {
 
 	// Create a new merged profile
 	merged := &Profile{
-		User:        profile.User,
-		URL:         mergedURLs,
-		HTTP:        mergeMap(getGlobalSection("http"), profile.HTTP),
-		Core:        mergeMap(getGlobalSection("core"), profile.Core),
-		Interactive: mergeMap(getGlobalSection("interactive"), profile.Interactive),
-		Add:         mergeMap(getGlobalSection("add"), profile.Add),
-		Delta:       mergeMap(getGlobalSection("delta"), profile.Delta),
-		Push:        mergeMap(getGlobalSection("push"), profile.Push),
-		Merge:       mergeMap(getGlobalSection("merge"), profile.Merge),
-		Commit:      mergeMap(getGlobalSection("commit"), profile.Commit),
-		GPG:         mergeMap(getGlobalSection("gpg"), profile.GPG),
-		Pull:        mergeMap(getGlobalSection("pull"), profile.Pull),
-		Rerere:      mergeMap(getGlobalSection("rerere"), profile.Rerere),
-		Column:      mergeMap(getGlobalSection("column"), profile.Column),
-		Branch:      mergeMap(getGlobalSection("branch"), profile.Branch),
-		Init:        mergeMap(getGlobalSection("init"), profile.Init),
-		Custom:      profile.Custom,
+		User: profile.User,
+		URL:  mergedURLs,
 	}
+
+	// Dynamically merge all sections
+	for _, section := range ConfigSections {
+		merged.SetSection(section, mergeMap(
+			getGlobalSection(section),
+			profile.GetSection(section),
+		))
+	}
+
+	// Custom section is not merged with global
+	merged.Custom = profile.Custom
 
 	return merged, nil
 }

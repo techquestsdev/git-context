@@ -161,22 +161,6 @@ func TestPrint(t *testing.T) {
 	}
 }
 
-func TestPrintf(t *testing.T) {
-	t.Parallel()
-
-	output := captureOutput(func() {
-		Printf(OutputInfo, "User: %s, Email: %s", "Test User", "test@example.com")
-	})
-
-	if !strings.Contains(output, "User: Test User") {
-		t.Error("Printf should format the message correctly")
-	}
-
-	if !strings.Contains(output, "Email: test@example.com") {
-		t.Error("Printf should include all formatted values")
-	}
-}
-
 func TestPrintTable(t *testing.T) {
 	t.Parallel()
 

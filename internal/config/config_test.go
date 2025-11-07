@@ -488,3 +488,96 @@ func TestDetermineCurrent(t *testing.T) {
 		t.Errorf("Current should be empty when no matching git config, got: %s", cfg.Current)
 	}
 }
+
+func TestDetermineCurrentDirectly(t *testing.T) {
+	t.Parallel()
+
+	cfg := NewConfig()
+
+	// Test with no profiles
+	cfg.determineCurrent()
+
+	if cfg.Current != "" {
+		t.Errorf("Current should be empty with no profiles, got: %s", cfg.Current)
+	}
+
+	// Add a profile
+	cfg.Profiles["test"] = &Profile{
+		User: UserConfig{
+			Name:  "Test User",
+			Email: "test@example.com",
+		},
+	}
+
+	// Call determineCurrent - won't match unless git config actually has these values
+	// This tests the code path for non-matching profiles
+	cfg.determineCurrent()
+	// Current will be empty unless the system's actual git config matches
+	// We're just ensuring no panic/error occurs
+
+	// Add multiple profiles to test the matching loop
+	cfg.Profiles["work"] = &Profile{
+		User: UserConfig{
+			Name:  "Work User",
+			Email: "work@example.com",
+		},
+	}
+	cfg.Profiles["personal"] = &Profile{
+		User: UserConfig{
+			Name:  "Personal User",
+			Email: "personal@example.com",
+		},
+	}
+
+	cfg.determineCurrent()
+	// Again, just ensuring the function completes without error
+}
+
+func TestMergeMapEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	// Test merging empty maps
+	result := mergeMap(nil, nil)
+	if len(result) != 0 {
+		t.Errorf("Merging nil maps should produce empty map, got length %d", len(result))
+	}
+
+	// Test merging with nil global
+	profile := map[string]any{"key1": "value1"}
+
+	result = mergeMap(nil, profile)
+	if len(result) != 1 || result["key1"] != "value1" {
+		t.Error("Should use profile values when global is nil")
+	}
+
+	// Test merging with nil profile
+	global := map[string]any{"key2": "value2"}
+
+	result = mergeMap(global, nil)
+	if len(result) != 1 || result["key2"] != "value2" {
+		t.Error("Should use global values when profile is nil")
+	}
+
+	// Test override behavior
+	global = map[string]any{
+		"key1": "global1",
+		"key2": "global2",
+	}
+	profile = map[string]any{
+		"key1": "profile1",
+		"key3": "profile3",
+	}
+	result = mergeMap(global, profile)
+
+	if result["key1"] != "profile1" {
+		t.Error("Profile value should override global")
+	}
+
+	if result["key2"] != "global2" {
+		t.Error("Global value should be preserved when not in profile")
+	}
+
+	if result["key3"] != "profile3" {
+		t.Error("Profile value should be included")
+	}
+}

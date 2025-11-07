@@ -32,12 +32,6 @@ func Print(outputType OutputType, message string) {
 	}
 }
 
-// Printf prints formatted colored output.
-func Printf(outputType OutputType, format string, a ...any) {
-	message := fmt.Sprintf(format, a...)
-	Print(outputType, message)
-}
-
 // PrintHeader prints a formatted header.
 func PrintHeader(title string) {
 	color.Cyan("\n=== %s ===\n", title)
@@ -73,21 +67,6 @@ func PromptText(label string, defaultValue string) (string, error) {
 	result, err := prompt.Run()
 	if err != nil {
 		return "", errors.Wrap(err, "prompt failed")
-	}
-
-	return result, nil
-}
-
-// PromptSelect prompts for selection from a list.
-func PromptSelect(label string, items []string) (string, error) {
-	prompt := promptui.Select{
-		Label: label,
-		Items: items,
-	}
-
-	_, result, err := prompt.Run()
-	if err != nil {
-		return "", errors.Wrap(err, "selection failed")
 	}
 
 	return result, nil

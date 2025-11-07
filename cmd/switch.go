@@ -88,44 +88,35 @@ func runSwitch(cmd *cobra.Command, args []string) error {
 // profileToGitConfig converts a Profile to a git configuration map.
 // It maps profile fields to git config keys (user.name, user.email, etc.).
 func profileToGitConfig(profile *config.Profile) map[string]any {
-	config := make(map[string]any)
+	gitConfig := make(map[string]any)
 
 	// User section
 	if profile.User.Name != "" {
-		config["user.name"] = profile.User.Name
+		gitConfig["user.name"] = profile.User.Name
 	}
 
 	if profile.User.Email != "" {
-		config["user.email"] = profile.User.Email
+		gitConfig["user.email"] = profile.User.Email
 	}
 
 	if profile.User.SigningKey != "" {
-		config["user.signingkey"] = profile.User.SigningKey
+		gitConfig["user.signingkey"] = profile.User.SigningKey
 	}
 
 	// URL rewrites
 	for _, url := range profile.URL {
 		key := fmt.Sprintf("url \"%s\".insteadOf", url.Pattern)
-		config[key] = url.InsteadOf
+		gitConfig[key] = url.InsteadOf
 	}
 
-	// Add other sections from the profile
-	addSectionToConfig(config, "http", profile.HTTP)
-	addSectionToConfig(config, "core", profile.Core)
-	addSectionToConfig(config, "interactive", profile.Interactive)
-	addSectionToConfig(config, "add", profile.Add)
-	addSectionToConfig(config, "delta", profile.Delta)
-	addSectionToConfig(config, "push", profile.Push)
-	addSectionToConfig(config, "merge", profile.Merge)
-	addSectionToConfig(config, "commit", profile.Commit)
-	addSectionToConfig(config, "gpg", profile.GPG)
-	addSectionToConfig(config, "pull", profile.Pull)
-	addSectionToConfig(config, "rerere", profile.Rerere)
-	addSectionToConfig(config, "column", profile.Column)
-	addSectionToConfig(config, "branch", profile.Branch)
-	addSectionToConfig(config, "init", profile.Init)
+	// Dynamically add all sections from the profile
+	for _, section := range config.ConfigSections {
+		if sectionMap := profile.GetSection(section); sectionMap != nil {
+			addSectionToConfig(gitConfig, section, sectionMap)
+		}
+	}
 
-	return config
+	return gitConfig
 }
 
 // addSectionToConfig adds a section with values to the git configuration map.
