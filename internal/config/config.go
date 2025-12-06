@@ -35,7 +35,7 @@ type Profile struct {
 	Push        map[string]any `yaml:"push,omitempty"`
 	Rebase      map[string]any `yaml:"rebase,omitempty"`
 	Rerere      map[string]any `yaml:"rerere,omitempty"`
-	Pager 			map[string]any `yaml:"pager,omitempty"`
+	Pager       map[string]any `yaml:"pager,omitempty"`
 	Tag         map[string]any `yaml:"tag,omitempty"`
 	URL         []URLConfig    `yaml:"url,omitempty"`
 	User        UserConfig     `yaml:"user,omitempty"`

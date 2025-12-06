@@ -262,6 +262,7 @@ func TestConfigSections(t *testing.T) {
 		"gpg":         true,
 		"pull":        true,
 		"rerere":      true,
+		"pager":       true,
 		"column":      true,
 		"branch":      true,
 		"init":        true,
