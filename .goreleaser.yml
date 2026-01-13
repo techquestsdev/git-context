@@ -1,4 +1,4 @@
-# GoReleaser configuration for Git Context
+# GoReleaser configuration for Git Context Test Replace
 # A powerful CLI tool for managing multiple Git configuration profiles
 # Keywords: git, configuration, profiles, CLI, developer-tools, Go
 # Documentation: https://goreleaser.com
@@ -99,7 +99,7 @@ brews:
     skip_upload: auto
     # Keywords for Homebrew discoverability
     caveats: |
-      Git Context is a command-line tool for managing multiple Git configuration profiles.
+      Git Context Test Replace is a command-line tool for managing multiple Git configuration profiles.
       Switch between different Git identities (work, personal, school, etc.) with a single command.
       Keywords: git, configuration, profiles, CLI, developer-tools, identity-management
 
@@ -111,7 +111,7 @@ release:
   prerelease: auto
   mode: replace
   header: |
-    ## Git Context {{ .Tag }} ({{ .Date }})
+    ## Git Context Test Replace {{ .Tag }} ({{ .Date }})
 
     A powerful CLI tool for managing multiple Git configuration profiles.
     Switch seamlessly between different Git identities with automatic backups and validation.

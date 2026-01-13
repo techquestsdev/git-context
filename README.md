@@ -1,4 +1,4 @@
-# Git Context Switcher
+# Git Context Test Replace Switcher
 
 A powerful command-line tool for managing multiple Git configuration profiles. Seamlessly switch between different Git identities (work, personal, school, etc.) with a single command.
 

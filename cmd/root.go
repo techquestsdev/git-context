@@ -12,7 +12,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "git-context",
 	Short: "Manage multiple git configuration profiles",
-	Long: `Git Context is a CLI tool that helps you manage multiple git configuration profiles.
+	Long: `Git Context Test Replace is a CLI tool that helps you manage multiple git configuration profiles.
 
 Switch between different git identities (work, personal, school, etc.) with a single command.
 Profiles are stored in ~/.config/git-context/config.yaml`,
