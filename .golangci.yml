@@ -48,7 +48,7 @@ linters:
         Main:
           allow:
             - $gostd
-            - github.com/aanogueira/git-context/
+            - github.com/techquestsdev/git-context/
             - github.com/manifoldco/promptui
             - github.com/cockroachdb/errors
             - github.com/fatih/color

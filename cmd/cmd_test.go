@@ -9,10 +9,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/aanogueira/git-context/internal/config"
-	"github.com/aanogueira/git-context/internal/git"
 	"github.com/cockroachdb/errors"
 	"github.com/fatih/color"
+	"github.com/techquestsdev/git-context/internal/config"
+	"github.com/techquestsdev/git-context/internal/git"
 )
 
 func TestRunInit(t *testing.T) {

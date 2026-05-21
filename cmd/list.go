@@ -5,10 +5,10 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/aanogueira/git-context/internal/config"
-	"github.com/aanogueira/git-context/internal/ui"
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
+	"github.com/techquestsdev/git-context/internal/config"
+	"github.com/techquestsdev/git-context/internal/ui"
 )
 
 var listCmd = &cobra.Command{

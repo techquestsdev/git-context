@@ -3,11 +3,11 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/aanogueira/git-context/internal/config"
-	"github.com/aanogueira/git-context/internal/git"
-	"github.com/aanogueira/git-context/internal/ui"
 	"github.com/cockroachdb/errors"
 	"github.com/spf13/cobra"
+	"github.com/techquestsdev/git-context/internal/config"
+	"github.com/techquestsdev/git-context/internal/git"
+	"github.com/techquestsdev/git-context/internal/ui"
 )
 
 var switchCmd = &cobra.Command{

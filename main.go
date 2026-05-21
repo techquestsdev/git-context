@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/aanogueira/git-context/cmd"
+	"github.com/techquestsdev/git-context/cmd"
 )
 
 // version is set at build time via goreleaser's

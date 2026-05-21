@@ -1,4 +1,4 @@
-module github.com/aanogueira/git-context
+module github.com/techquestsdev/git-context
 
 go 1.25.0
 
