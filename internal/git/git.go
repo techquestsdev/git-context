@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/techquestsdev/git-context/internal/config"
 	"github.com/cockroachdb/errors"
+	"github.com/techquestsdev/git-context/internal/config"
 )
 
 // Git handles git config operations.

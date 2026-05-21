@@ -5,11 +5,11 @@ import (
 	"os"
 	"sort"
 
+	"github.com/cockroachdb/errors"
+	"github.com/spf13/cobra"
 	"github.com/techquestsdev/git-context/internal/config"
 	"github.com/techquestsdev/git-context/internal/git"
 	"github.com/techquestsdev/git-context/internal/ui"
-	"github.com/cockroachdb/errors"
-	"github.com/spf13/cobra"
 )
 
 var dirCmd = &cobra.Command{
