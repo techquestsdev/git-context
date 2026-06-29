@@ -3,7 +3,7 @@ module github.com/techquestsdev/git-context
 go 1.25.0
 
 require (
-	github.com/cockroachdb/errors v1.13.0
+	github.com/cockroachdb/errors v1.14.0
 	github.com/fatih/color v1.19.0
 	github.com/manifoldco/promptui v0.9.0
 	github.com/spf13/cobra v1.10.2
