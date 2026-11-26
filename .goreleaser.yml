@@ -1,13 +1,10 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # GoReleaser configuration for Git Context
-# A powerful CLI tool for managing multiple Git configuration profiles
-# Keywords: git, configuration, profiles, CLI, developer-tools, Go
-# Documentation: https://goreleaser.com
 
 project_name: git-context
 
 version: 2
 
-# Metadata for the project
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
 
@@ -44,7 +41,8 @@ builds:
 
 archives:
   - id: default
-    format: tar.gz
+    formats:
+      - tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -55,7 +53,8 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats:
+          - zip
     files:
       - README.md
       - LICENSE
@@ -64,7 +63,7 @@ checksum:
   name_template: "checksums.txt"
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
@@ -87,21 +86,33 @@ changelog:
     - title: Others
       order: 999
 
-brews:
-  - repository:
-      owner: techquestsdev
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TOKEN }}"
-    name: git-context
+homebrew_casks:
+  - name: git-context
+    directory: Casks
     homepage: https://github.com/techquestsdev/git-context
     description: "A powerful CLI tool for managing multiple Git configuration profiles"
     license: MIT
+    binaries:
+      - git-context
     skip_upload: auto
-    # Keywords for Homebrew discoverability
+    repository:
+      owner: techquestsdev
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.HOMEBREW_TOKEN }}"
+    commit_author:
+      name: github-actions[bot]
+      email: github-actions[bot]@users.noreply.github.com
+    commit_msg_template: "Brew cask update for {{ .ProjectName }} version {{ .Tag }}"
     caveats: |
       Git Context is a command-line tool for managing multiple Git configuration profiles.
       Switch between different Git identities (work, personal, school, etc.) with a single command.
-      Keywords: git, configuration, profiles, CLI, developer-tools, identity-management
+    hooks:
+      post:
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/git-context"]
+          end
 
 release:
   github:
