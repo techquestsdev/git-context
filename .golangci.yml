@@ -14,7 +14,9 @@ linters:
   default: all
   disable:
     - wsl # Deprecated, using wsl_v5 instead
-    - exhaustruct # Disabled due to excessive noise
+    - gomodguard # Deprecated, using gomodguard_v2 instead
+    - exhaustruct # Deprecated, replaced by exhaustruct_v5
+    - exhaustruct_v5 # Disabled due to excessive noise
     - noinlineerr # Disabled to allow error wrapping without inlining
     - testpackage # Tests need access to unexported functions
     - gochecknoglobals # Cobra commands need to be global

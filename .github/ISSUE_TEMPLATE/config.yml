@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Discussions
-    url: https://github.com/techquestsdev/git-context/discussions
-    about: Ask questions and discuss ideas with the community
-  - name: Documentation
-    url: https://github.com/techquestsdev/git-context#readme
-    about: Read the documentation for help and examples
